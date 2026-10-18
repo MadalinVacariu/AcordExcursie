@@ -426,22 +426,31 @@
     }
 
     // Salvare răspuns în Firebase
+    // Salvare răspuns în Firebase
     async function handleChoice(id, valoare) {
       const nouaValoare = (voturi[id] === valoare) ? "" : valoare;
+      
+      // Actualizare vizuală imediată
       voturi[id] = nouaValoare;
       updateUI();
-
       toast.textContent = "Se salvează...";
+
       try {
-        const urlItem = FIREBASE_URL.replace(".json", `/${id}.json`);
-        await fetch(urlItem, {
+        const urlItem = `https://acordexcursie-default-rtdb.europe-west1.firebasedatabase.app/voturi/${id}.json`;
+        const res = await fetch(urlItem, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(nouaValoare)
         });
-        toast.textContent = "Salvat cu succes!";
+
+        if (!res.ok) {
+          throw new Error("Eroare server");
+        }
+
+        toast.textContent = "Salvat cu succes! ✓";
       } catch (err) {
-        toast.textContent = "Eroare la salvare!";
+        toast.textContent = "Eroare: permisiunile Firebase sunt blocate!";
+        console.error(err);
       }
     }
 
