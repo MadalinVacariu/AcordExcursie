@@ -6,11 +6,16 @@
   <title>Acord Părinți - Activitate Marți (20 Octombrie)</title>
   <style>
     :root {
-      --primary: #2563eb;
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --border: #e2e8f0;
       --text: #1e293b;
+      --green-bg: #dcfce7;
+      --green-border: #16a34a;
+      --green-text: #15803d;
+      --red-bg: #fee2e2;
+      --red-border: #dc2626;
+      --red-text: #b91c1c;
     }
 
     * {
@@ -23,23 +28,23 @@
     body {
       background-color: var(--bg);
       color: var(--text);
-      padding: 20px 10px;
+      padding: 20px 12px;
       display: flex;
       justify-content: center;
     }
 
     .container {
       width: 100%;
-      max-width: 950px;
+      max-width: 760px;
       background: var(--card-bg);
-      padding: 24px;
+      padding: 24px 20px;
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
 
     h1 {
-      font-size: 1.5rem;
-      margin-bottom: 8px;
+      font-size: 1.4rem;
+      margin-bottom: 6px;
       color: #0f172a;
       text-align: center;
     }
@@ -47,8 +52,18 @@
     .subtitle {
       font-size: 0.95rem;
       color: #64748b;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       text-align: center;
+    }
+
+    .status-toast {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #16a34a;
+      font-weight: 500;
+      min-height: 20px;
+      margin-bottom: 12px;
+      transition: opacity 0.3s;
     }
 
     .table-wrapper {
@@ -75,82 +90,46 @@
     }
 
     tr:hover {
-      background-color: #f8fafc;
+      background-color: #fcfdfe;
     }
 
-    .input-child {
-      width: 100%;
-      padding: 6px 10px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      outline: none;
-      font-size: 0.9rem;
-    }
-
-    .input-child:focus {
-      border-color: var(--primary);
-    }
-
-    .status-select {
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      font-size: 0.9rem;
-      background: #fff;
-      cursor: pointer;
-    }
-
-    .badge-ok {
-      background-color: #dcfce7;
-      color: #15803d;
-      font-weight: 500;
-    }
-
-    .badge-propus {
-      background-color: #e0f2fe;
-      color: #0369a1;
-      font-weight: 500;
-    }
-
-    .badge-refuz {
-      background-color: #fee2e2;
-      color: #b91c1c;
-      font-weight: 500;
-    }
-
-    .actions {
-      margin-top: 20px;
+    .btn-group {
       display: flex;
-      justify-content: flex-end;
-      gap: 12px;
+      gap: 8px;
     }
 
-    button {
-      padding: 10px 18px;
-      border: none;
+    .choice-btn {
+      padding: 7px 14px;
       border-radius: 6px;
-      font-weight: 600;
+      border: 1px solid var(--border);
+      background-color: #ffffff;
+      color: #475569;
+      font-size: 0.88rem;
+      font-weight: 500;
       cursor: pointer;
-      font-size: 0.95rem;
-      transition: background 0.2s;
+      transition: all 0.15s ease-in-out;
     }
 
-    .btn-save {
-      background: var(--primary);
-      color: white;
+    .choice-btn:hover {
+      background-color: #f1f5f9;
     }
 
-    .btn-save:hover {
-      background: #1d4ed8;
+    /* Stare activă: De acord */
+    .choice-btn.btn-agree.active {
+      background-color: var(--green-bg);
+      border-color: var(--green-border);
+      color: var(--green-text);
+      font-weight: 700;
+      box-shadow: 0 0 0 1px var(--green-border);
     }
 
-    .btn-export {
-      background: #e2e8f0;
-      color: #334155;
-    }
-
-    .btn-export:hover {
-      background: #cbd5e1;
+    /* Stare activă: Nu */
+    .choice-btn.btn-refuse.active {
+      background-color: var(--red-bg);
+      border-color: var(--red-border);
+      color: var(--red-text);
+      font-weight: 700;
+      box-shadow: 0 0 0 1px var(--red-border);
     }
   </style>
 </head>
@@ -159,6 +138,8 @@
   <div class="container">
     <h1>Tabel Acord Părinți</h1>
     <p class="subtitle">Activitate programată pentru <strong>marți, 20 octombrie</strong></p>
+    
+    <div id="toast" class="status-toast"></div>
 
     <div class="table-wrapper">
       <table>
@@ -166,89 +147,102 @@
           <tr>
             <th style="width: 50px;">Nr.</th>
             <th>Nume Părinte</th>
-            <th>Nume Elev</th>
-            <th style="width: 240px;">Stare / Opțiune</th>
+            <th style="width: 260px;">Opțiune</th>
           </tr>
         </thead>
         <tbody id="table-body">
-          <!-- Rândurile se generează dinamic -->
+          <!-- Rândurile sunt generate în ordine alfabetică -->
         </tbody>
       </table>
-    </div>
-
-    <div class="actions">
-      <button class="btn-export" onclick="exportData()">Descarcă lista (.json)</button>
-      <button class="btn-save" onclick="saveData()">Salvează modificările</button>
     </div>
   </div>
 
   <script>
+    // Lista părinților ordonată alfabetic (Arsentea are 2 rânduri distincte pentru cei 2 copii)
     const listaParinti = [
-      "Cătălinoiu", "Sofronie", "Sion", "Cândea", "Blaga",
-      "Popovici", "Furdui", "Mihalache", "Togan", "Ovcharuk",
-      "Zămăcău", "Mărgineanu", "Bologa", "Arsentea (Copil 1)",
-      "Arsentea (Copil 2)", "Mihoc", "Gabor", "Hălmaciu"
+      { id: "1", nume: "Arsentea (Copil 1)" },
+      { id: "2", nume: "Arsentea (Copil 2)" },
+      { id: "3", nume: "Blaga" },
+      { id: "4", nume: "Bologa" },
+      { id: "5", nume: "Cândea" },
+      { id: "6", nume: "Cătălinoiu" },
+      { id: "7", nume: "Furdui" },
+      { id: "8", nume: "Gabor" },
+      { id: "9", nume: "Hălmaciu" },
+      { id: "10", nume: "Mărgineanu" },
+      { id: "11", nume: "Mihalache" },
+      { id: "12", nume: "Mihoc" },
+      { id: "13", nume: "Ovcharuk" },
+      { id: "14", nume: "Popovici" },
+      { id: "15", nume: "Sion" },
+      { id: "16", nume: "Sofronie" },
+      { id: "17", nume: "Togan" },
+      { id: "18", nume: "Zămăcău" }
     ];
 
-    // Citire date salvate local dacă există
-    const savedData = JSON.parse(localStorage.getItem("acord_parinti_20oct") || "{}");
-
+    // Încărcare din memoria dispozitivului
+    const savedChoices = JSON.parse(localStorage.getItem("acord_parinti_optiuni") || "{}");
     const tbody = document.getElementById("table-body");
+    const toast = document.getElementById("toast");
 
-    listaParinti.forEach((parinte, index) => {
+    listaParinti.forEach((item, index) => {
       const nr = index + 1;
-      const childVal = savedData[nr]?.copil || "";
-      const statusVal = savedData[nr]?.status || "";
+      const currentChoice = savedChoices[item.id] || "";
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${nr}</td>
-        <td><strong>${parinte}</strong></td>
+        <td><strong>${item.nume}</strong></td>
         <td>
-          <input type="text" class="input-child" id="copil-${nr}" placeholder="Scrieți numele copilului..." value="${childVal}">
-        </td>
-        <td>
-          <select class="status-select" id="status-${nr}" onchange="updateRowColor(this)">
-            <option value="">-- Alegeți opțiunea --</option>
-            <option value="acord" ${statusVal === 'acord' ? 'selected' : ''}>Sunt de acord</option>
-            <option value="propus" ${statusVal === 'propus' ? 'selected' : ''}>Am propus eu activitatea</option>
-            <option value="nu" ${statusVal === 'nu' ? 'selected' : ''}>Nu sunt de acord</option>
-          </select>
+          <div class="btn-group">
+            <button type="button" 
+                    id="btn-agree-${item.id}" 
+                    class="choice-btn btn-agree ${currentChoice === 'da' ? 'active' : ''}" 
+                    onclick="setChoice('${item.id}', 'da')">
+              ✓ De acord
+            </button>
+            <button type="button" 
+                    id="btn-refuse-${item.id}" 
+                    class="choice-btn btn-refuse ${currentChoice === 'nu' ? 'active' : ''}" 
+                    onclick="setChoice('${item.id}', 'nu')">
+              ✕ Nu
+            </button>
+          </div>
         </td>
       `;
       tbody.appendChild(tr);
     });
 
-    function updateRowColor(selectElem) {
-      selectElem.className = 'status-select';
-      if (selectElem.value === 'acord') selectElem.classList.add('badge-ok');
-      else if (selectElem.value === 'propus') selectElem.classList.add('badge-propus');
-      else if (selectElem.value === 'nu') selectElem.classList.add('badge-refuz');
-    }
+    let toastTimeout;
+    function setChoice(id, valoare) {
+      const btnAgree = document.getElementById(`btn-agree-${id}`);
+      const btnRefuse = document.getElementById(`btn-refuse-${id}`);
 
-    // Aplica culorile inițiale
-    document.querySelectorAll('.status-select').forEach(updateRowColor);
+      // Dacă utilizatorul apasă din nou pe aceeași opțiune, o debifează
+      if (savedChoices[id] === valoare) {
+        delete savedChoices[id];
+        btnAgree.classList.remove('active');
+        btnRefuse.classList.remove('active');
+      } else {
+        savedChoices[id] = valoare;
+        if (valoare === 'da') {
+          btnAgree.classList.add('active');
+          btnRefuse.classList.remove('active');
+        } else {
+          btnRefuse.classList.add('active');
+          btnAgree.classList.remove('active');
+        }
+      }
 
-    function saveData() {
-      const data = {};
-      listaParinti.forEach((_, index) => {
-        const nr = index + 1;
-        data[nr] = {
-          copil: document.getElementById(`copil-${nr}`).value,
-          status: document.getElementById(`status-${nr}`).value
-        };
-      });
-      localStorage.setItem("acord_parinti_20oct", JSON.stringify(data));
-      alert("Datele au fost salvate cu succes în memoria dispozitivului!");
-    }
+      // Salvare automată instantanee
+      localStorage.setItem("acord_parinti_optiuni", JSON.stringify(savedChoices));
 
-    function exportData() {
-      saveData();
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(localStorage.getItem("acord_parinti_20oct"));
-      const dlAnchorElem = document.createElement('a');
-      dlAnchorElem.setAttribute("href", dataStr);
-      dlAnchorElem.setAttribute("download", "acord_parinti_20_octombrie.json");
-      dlAnchorElem.click();
+      // Indicator vizual discret de salvare
+      toast.textContent = "Modificare salvată automat!";
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.textContent = "";
+      }, 2000);
     }
   </script>
 </body>
