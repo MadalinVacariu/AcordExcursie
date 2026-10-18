@@ -4,164 +4,331 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Acord Părinți - Activitate Marți (20 Octombrie)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f8fafc;
+      --bg: #f1f5f9;
       --card-bg: #ffffff;
-      --border: #e2e8f0;
-      --text: #1e293b;
-      --green-bg: #dcfce7;
-      --green-border: #16a34a;
-      --green-text: #15803d;
-      --red-bg: #fee2e2;
-      --red-border: #dc2626;
-      --red-text: #b91c1c;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-subtle: #e2e8f0;
+      
+      --agree-color: #059669;
+      --agree-bg: #ecfdf5;
+      --agree-border: #a7f3d0;
+      --agree-active-bg: #10b981;
+      
+      --refuse-color: #dc2626;
+      --refuse-bg: #fef2f2;
+      --refuse-border: #fecaca;
+      --refuse-active-bg: #ef4444;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     body {
-      background-color: var(--bg);
-      color: var(--text);
-      padding: 20px 12px;
+      background: radial-gradient(circle at 50% 0%, #e2e8f0 0%, #f8fafc 100%);
+      color: var(--text-main);
+      padding: 30px 14px 60px;
       display: flex;
       justify-content: center;
+      min-height: 100vh;
     }
 
     .container {
       width: 100%;
-      max-width: 760px;
+      max-width: 820px;
       background: var(--card-bg);
-      padding: 24px 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      padding: 32px 28px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-radius: 9999px;
+      margin-bottom: 10px;
     }
 
     h1 {
-      font-size: 1.4rem;
-      margin-bottom: 6px;
-      color: #0f172a;
-      text-align: center;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
     }
 
     .subtitle {
       font-size: 0.95rem;
-      color: #64748b;
-      margin-bottom: 20px;
+      color: var(--text-muted);
+    }
+
+    /* Panou Statistici */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 24px 0;
+      padding: 14px;
+      background: #f8fafc;
+      border-radius: 14px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .stat-card {
       text-align: center;
     }
 
-    .status-toast {
-      text-align: center;
+    .stat-number {
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .stat-agree { color: var(--agree-color); }
+    .stat-refuse { color: var(--refuse-color); }
+    .stat-pending { color: #8b5cf6; }
+
+    /* Indicator Status Sincronizare */
+    .sync-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       font-size: 0.85rem;
-      color: #16a34a;
-      font-weight: 500;
-      min-height: 20px;
-      margin-bottom: 12px;
-      transition: opacity 0.3s;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      min-height: 22px;
     }
 
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      transition: background 0.3s;
+    }
+
+    .status-dot.active {
+      background: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+
+    /* Tabel modern */
     .table-wrapper {
-      overflow-x: auto;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      font-size: 0.95rem;
     }
 
-    th, td {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
+    thead {
+      background: #f8fafc;
     }
 
     th {
-      background-color: #f1f5f9;
-      font-weight: 600;
-      color: #334155;
-    }
-
-    tr:hover {
-      background-color: #fcfdfe;
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 8px;
-    }
-
-    .choice-btn {
-      padding: 7px 14px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background-color: #ffffff;
+      padding: 14px 18px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       color: #475569;
-      font-size: 0.88rem;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    td {
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: middle;
+      font-size: 0.95rem;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #fbfcfe;
+    }
+
+    .index-col {
+      width: 45px;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    .parent-name {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .parent-sub {
+      font-size: 0.78rem;
+      color: #64748b;
+      margin-left: 6px;
       font-weight: 500;
+      background: #e2e8f0;
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    /* Butoane de Acțiune */
+    .actions-group {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .btn-vote {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 10px;
+      border: 1.5px solid transparent;
       cursor: pointer;
-      transition: all 0.15s ease-in-out;
+      background: #f8fafc;
+      color: #475569;
+      border-color: var(--border-subtle);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
     }
 
-    .choice-btn:hover {
-      background-color: #f1f5f9;
+    .btn-vote:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
     }
 
-    /* Stare activă: De acord */
-    .choice-btn.btn-agree.active {
-      background-color: var(--green-bg);
-      border-color: var(--green-border);
-      color: var(--green-text);
-      font-weight: 700;
-      box-shadow: 0 0 0 1px var(--green-border);
+    .btn-vote:active {
+      transform: scale(0.96);
     }
 
-    /* Stare activă: Nu */
-    .choice-btn.btn-refuse.active {
-      background-color: var(--red-bg);
-      border-color: var(--red-border);
-      color: var(--red-text);
-      font-weight: 700;
-      box-shadow: 0 0 0 1px var(--red-border);
+    /* Buton activ: De acord */
+    .btn-agree.active {
+      background: var(--agree-active-bg);
+      color: #ffffff;
+      border-color: var(--agree-active-bg);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    /* Buton activ: Nu */
+    .btn-refuse.active {
+      background: var(--refuse-active-bg);
+      color: #ffffff;
+      border-color: var(--refuse-active-bg);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 20px 14px;
+      }
+      th, td {
+        padding: 12px 10px;
+      }
+      .actions-group {
+        gap: 6px;
+      }
+      .btn-vote {
+        padding: 7px 11px;
+        font-size: 0.8rem;
+      }
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1>Tabel Acord Părinți</h1>
-    <p class="subtitle">Activitate programată pentru <strong>marți, 20 octombrie</strong></p>
-    
-    <div id="toast" class="status-toast"></div>
+    <div class="header">
+      <div class="tag-badge">
+        <span>📅</span> 20 Octombrie
+      </div>
+      <h1>Centralizator Acord Părinți</h1>
+      <p class="subtitle">Vă rugăm să bifați opțiunea dumneavoastră pentru activitatea propusă</p>
+    </div>
+
+    <!-- Contoare voturi -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-number stat-agree" id="count-agree">0</div>
+        <div class="stat-label">De acord</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number stat-refuse" id="count-refuse">0</div>
+        <div class="stat-label">Nu</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number stat-pending" id="count-pending">18</div>
+        <div class="stat-label">În așteptare</div>
+      </div>
+    </div>
+
+    <div class="sync-status">
+      <span class="status-dot" id="status-indicator"></span>
+      <span id="toast">Se încarcă datele...</span>
+    </div>
 
     <div class="table-wrapper">
       <table>
         <thead>
           <tr>
-            <th style="width: 50px;">Nr.</th>
+            <th class="index-col">Nr.</th>
             <th>Nume Părinte</th>
-            <th style="width: 260px;">Opțiune</th>
+            <th style="text-align: right; width: 240px;">Răspuns</th>
           </tr>
         </thead>
         <tbody id="table-body">
-          <!-- Rândurile sunt generate în ordine alfabetică -->
         </tbody>
       </table>
     </div>
   </div>
 
   <script>
-    // Lista părinților ordonată alfabetic (Arsentea are 2 rânduri distincte pentru cei 2 copii)
+    // Conexiunea directă la baza ta de date din Firebase
+    const FIREBASE_URL = "https://acordexcursie-default-rtdb.europe-west1.firebasedatabase.app/voturi.json";
+
     const listaParinti = [
-      { id: "1", nume: "Arsentea (Copil 1)" },
-      { id: "2", nume: "Arsentea (Copil 2)" },
+      { id: "1", nume: "Arsentea", tag: "Copil 1" },
+      { id: "2", nume: "Arsentea", tag: "Copil 2" },
       { id: "3", nume: "Blaga" },
       { id: "4", nume: "Bologa" },
       { id: "5", nume: "Cândea" },
@@ -180,31 +347,34 @@
       { id: "18", nume: "Zămăcău" }
     ];
 
-    // Încărcare din memoria dispozitivului
-    const savedChoices = JSON.parse(localStorage.getItem("acord_parinti_optiuni") || "{}");
+    let voturi = {};
     const tbody = document.getElementById("table-body");
     const toast = document.getElementById("toast");
+    const indicator = document.getElementById("status-indicator");
 
+    // Construire tabel
     listaParinti.forEach((item, index) => {
       const nr = index + 1;
-      const currentChoice = savedChoices[item.id] || "";
-
+      const tagHtml = item.tag ? `<span class="parent-sub">${item.tag}</span>` : "";
+      
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${nr}</td>
-        <td><strong>${item.nume}</strong></td>
+        <td class="index-col">${nr}</td>
         <td>
-          <div class="btn-group">
+          <span class="parent-name">${item.nume}</span>${tagHtml}
+        </td>
+        <td>
+          <div class="actions-group">
             <button type="button" 
                     id="btn-agree-${item.id}" 
-                    class="choice-btn btn-agree ${currentChoice === 'da' ? 'active' : ''}" 
-                    onclick="setChoice('${item.id}', 'da')">
+                    class="btn-vote btn-agree" 
+                    onclick="handleChoice('${item.id}', 'da')">
               ✓ De acord
             </button>
             <button type="button" 
                     id="btn-refuse-${item.id}" 
-                    class="choice-btn btn-refuse ${currentChoice === 'nu' ? 'active' : ''}" 
-                    onclick="setChoice('${item.id}', 'nu')">
+                    class="btn-vote btn-refuse" 
+                    onclick="handleChoice('${item.id}', 'nu')">
               ✕ Nu
             </button>
           </div>
@@ -213,37 +383,73 @@
       tbody.appendChild(tr);
     });
 
-    let toastTimeout;
-    function setChoice(id, valoare) {
-      const btnAgree = document.getElementById(`btn-agree-${id}`);
-      const btnRefuse = document.getElementById(`btn-refuse-${id}`);
+    function updateStats() {
+      let agreeCount = 0;
+      let refuseCount = 0;
 
-      // Dacă utilizatorul apasă din nou pe aceeași opțiune, o debifează
-      if (savedChoices[id] === valoare) {
-        delete savedChoices[id];
-        btnAgree.classList.remove('active');
-        btnRefuse.classList.remove('active');
-      } else {
-        savedChoices[id] = valoare;
-        if (valoare === 'da') {
-          btnAgree.classList.add('active');
-          btnRefuse.classList.remove('active');
-        } else {
-          btnRefuse.classList.add('active');
-          btnAgree.classList.remove('active');
-        }
-      }
+      listaParinti.forEach(item => {
+        const val = voturi[item.id] || "";
+        if (val === 'da') agreeCount++;
+        if (val === 'nu') refuseCount++;
+      });
 
-      // Salvare automată instantanee
-      localStorage.setItem("acord_parinti_optiuni", JSON.stringify(savedChoices));
-
-      // Indicator vizual discret de salvare
-      toast.textContent = "Modificare salvată automat!";
-      clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => {
-        toast.textContent = "";
-      }, 2000);
+      document.getElementById("count-agree").textContent = agreeCount;
+      document.getElementById("count-refuse").textContent = refuseCount;
+      document.getElementById("count-pending").textContent = listaParinti.length - (agreeCount + refuseCount);
     }
+
+    function updateUI() {
+      listaParinti.forEach(item => {
+        const val = voturi[item.id] || "";
+        const btnAgree = document.getElementById(`btn-agree-${item.id}`);
+        const btnRefuse = document.getElementById(`btn-refuse-${item.id}`);
+
+        btnAgree.classList.toggle('active', val === 'da');
+        btnRefuse.classList.toggle('active', val === 'nu');
+      });
+      updateStats();
+    }
+
+    // Încărcare din Firebase
+    async function loadData() {
+      try {
+        const res = await fetch(FIREBASE_URL);
+        const data = await res.json();
+        voturi = data || {};
+        updateUI();
+        indicator.classList.add("active");
+        toast.textContent = "Conectat în timp real";
+      } catch (e) {
+        indicator.classList.remove("active");
+        toast.textContent = "Eroare la conectare la server.";
+      }
+    }
+
+    // Salvare răspuns în Firebase
+    async function handleChoice(id, valoare) {
+      const nouaValoare = (voturi[id] === valoare) ? "" : valoare;
+      voturi[id] = nouaValoare;
+      updateUI();
+
+      toast.textContent = "Se salvează...";
+      try {
+        const urlItem = FIREBASE_URL.replace(".json", `/${id}.json`);
+        await fetch(urlItem, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(nouaValoare)
+        });
+        toast.textContent = "Salvat cu succes!";
+      } catch (err) {
+        toast.textContent = "Eroare la salvare!";
+      }
+    }
+
+    // Prima încărcare
+    loadData();
+
+    // Actualizare automată la fiecare 3 secunde pentru ceilalți părinți
+    setInterval(loadData, 3000);
   </script>
 </body>
 </html>
